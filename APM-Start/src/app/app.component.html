@@ -1,14 +1,26 @@
+<span class="fa fa-spinner spinner"
+      *ngIf="loading"></span>
+
 <nav class="navbar navbar-expand navbar-light bg-light">
   <a class="navbar-brand">{{pageTitle}}</a>
   <ul class="navbar-nav">
     <li class="nav-item">
-      <a class="nav-link">Home</a>
+      <a [routerLink]="['/welcome']"
+         routerLinkActive="active"
+         class="nav-link">Home</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link">Product List</a>
+      <a [routerLink]="['/products']"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{exact: true}"
+         class="nav-link">Product List</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link">Add Product</a>
+      <a [routerLink]="['/products', 0, 'edit']"
+         routerLinkActive="active"
+         class="nav-link">
+        Add Product
+      </a>
     </li>
   </ul>
   <ul class="navbar-nav ml-auto">
@@ -16,12 +28,22 @@
         *ngIf="isLoggedIn">
       <a class="nav-link">Welcome {{ userName }}</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link">Show Messages</a>
+    <li class="nav-item"
+        *ngIf="!isMessageDisplayed">
+      <a class="nav-link"
+         [routerLink]="[{ outlets: { popup: ['messages']} }]"
+         (click)="displayMessages()">Show Messages</a>
+    </li>
+    <li class="nav-item"
+        *ngIf="isMessageDisplayed">
+      <a class="nav-link"
+         [routerLink]="[{ outlets: { popup: ['messages']} }]"
+         (click)="hideMessages()">Hide Messages</a>
     </li>
     <li class="nav-item"
         *ngIf="!isLoggedIn">
-      <a class="nav-link">Log In</a>
+      <a [routerLink]="['/login']"
+         class="nav-link">Log In</a>
     </li>
     <li class="nav-item"
         *ngIf="isLoggedIn">
@@ -30,6 +52,15 @@
     </li>
   </ul>
 </nav>
-<div class="container">
-  <pm-home></pm-home>
+<div class="container"
+     [@slideInAnimation]="o.isActivated ? o.activatedRoute : ''">
+  <div class="row">
+    <div class="col-md-10"
+         [@slideInAnimation]="o.isActivated ? o.activatedRoute : ''">
+      <router-outlet #o="outlet"></router-outlet>
+    </div>
+    <div class="col-md-2">
+      <router-outlet name="popup"></router-outlet>
+    </div>
+  </div>
 </div>
